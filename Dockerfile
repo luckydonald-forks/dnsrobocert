@@ -1,4 +1,7 @@
-FROM docker.io/python:3.11.12-slim AS constraints
+FROM docker.io/python:3.11.12-alpine AS constraints
+
+# Install build dependencies
+RUN apk add --no-cache build-base libffi-dev libxml2-dev libxslt-dev
 
 COPY src uv.lock pyproject.toml README.rst /tmp/dnsrobocert/
 
@@ -12,29 +15,35 @@ RUN pip install uv \
  && [ "$(uname -m)" != "armv7l" ] || sed -i 's/lxml==.*/lxml==5.3.1/' /tmp/dnsrobocert/constraints.txt \
  && uv build
 
-FROM docker.io/python:3.11.12-slim
+# Alpine-based final stage for minimal size
+FROM docker.io/python:3.11.12-alpine
 
 COPY --from=constraints /tmp/dnsrobocert/constraints.txt /tmp/dnsrobocert/dist/*.whl /tmp/dnsrobocert/
 
 ENV CONFIG_PATH=/etc/dnsrobocert/config.yml
 ENV CERTS_PATH=/etc/letsencrypt
 
-RUN apt-get update -y \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+# Install only runtime dependencies
+RUN apk add --no-cache \
        curl \
+       git \
+       libxslt \
        bash \
-       libxslt1.1 \
-       podman \
- && curl -fsSL get.docker.com | sh \
- && PIP_EXTRA_INDEX_URL=https://www.piwheels.org/simple python3 -m pip install -c /tmp/dnsrobocert/constraints.txt /tmp/dnsrobocert/*.whl \
+       docker-cli \
+ # Install Python packages
+ && PIP_EXTRA_INDEX_URL=https://www.piwheels.org/simple python3 -m pip install --no-cache-dir -c /tmp/dnsrobocert/constraints.txt /tmp/dnsrobocert/*.whl \
+ # Create necessary directories
  && mkdir -p /etc/dnsrobocert /etc/letsencrypt \
- && rm -rf /tmp/dnsrobocert /var/lib/apt/lists/*
+ # Cleanup
+ && rm -rf /tmp/dnsrobocert /root/.cache /tmp/* /var/tmp/* \
+ && find /usr/local -depth \( -type d -a -name test -o -name tests -o -name __pycache__ \) -exec rm -rf '{}' + \
+ && find /usr/local -name '*.pyc' -delete
 
 # For retro-compatibility purpose
 RUN mkdir -p /opt/dnsrobocert/bin \
  && ln -s /usr/local/bin/python /opt/dnsrobocert/bin/python
 
 COPY docker/run.sh /run.sh
-RUN chmod +x run.sh
+RUN chmod +x /run.sh
 
 CMD ["/run.sh"]
