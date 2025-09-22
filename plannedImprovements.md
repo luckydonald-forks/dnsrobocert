@@ -4,11 +4,11 @@ This document outlines optimization opportunities and best practice improvements
 
 ## 🔴 High Priority (Security & Stability)
 
-### 1. Git Dependency Security Risk
+### 1. Git Dependency Security Risk ✅ COMPLETED
 **Location**: `pyproject.toml:39`
 **Issue**: Dependency on git repository main branch is unstable
-**Current**: `dns-lexicon[full] @ git+https://github.com/jonmeacham/dns-lexicon.git@main`
-**Recommendation**: Pin to specific commit hash or use published version
+**Status**: ✅ Implemented - Pinned to specific commit hash bc109536ac26c541de7f98318f49a8660d014431
+**Implementation**: `dns-lexicon[full] @ git+https://github.com/jonmeacham/dns-lexicon.git@bc109536ac26c541de7f98318f49a8660d014431`
 
 ### 2. File Permission Validation ✅ COMPLETED
 **Location**: `src/dnsrobocert/core/utils.py:65-102`
@@ -221,7 +221,7 @@ logger.info("Certificate processing started",
 
 ## Implementation Priority
 
-1. **Immediate**: Address High Priority security issues (#1, ~~#2 ✅~~)
+1. **Immediate**: Address High Priority security issues (~~#1 ✅~~, ~~#2 ✅~~)
 2. **Next Sprint**: Implement Medium Priority improvements:
    - **High Impact, Low Effort**: Docker build optimizations (#3a: .dockerignore)
    - **Completed**: Background worker optimization (~~#4 ✅~~), Hash upgrade (~~#5 ✅~~), YAML security (~~#6 ✅~~)

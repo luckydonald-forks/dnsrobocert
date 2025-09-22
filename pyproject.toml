@@ -36,7 +36,7 @@ requires-python = ">=3.9"
 dependencies = [
     "acme>=2",
     "certbot>=2",
-    "dns-lexicon[full] @ git+https://github.com/jonmeacham/dns-lexicon.git@main",
+    "dns-lexicon[full] @ git+https://github.com/jonmeacham/dns-lexicon.git@bc109536ac26c541de7f98318f49a8660d014431",
     "cryptography>=2",
     "cffi>=1",
     "lxml>=4",
