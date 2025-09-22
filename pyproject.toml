@@ -34,21 +34,21 @@ readme = "README.rst"
 
 requires-python = ">=3.9"
 dependencies = [
-    "acme>=2",
-    "certbot>=2",
+    "acme>=4.0,<5.0",
+    "certbot>=4.0,<5.0",
     "dns-lexicon[full] @ git+https://github.com/jonmeacham/dns-lexicon.git@bc109536ac26c541de7f98318f49a8660d014431",
-    "cryptography>=2",
-    "cffi>=1",
-    "lxml>=4",
-    "dnspython>=2.1.0",
-    "jsonschema>=3",
-    "pem>=20",
-    "pyopenssl>=19",
-    "pyyaml>=5",
-    "schedule>=0",
-    "coloredlogs>=14",
-    "colorama>=0",
-    "tldextract>=3",
+    "cryptography>=41.0,<46.0",
+    "cffi>=1.15,<2.0",
+    "lxml>=4.9,<7.0",
+    "dnspython>=2.1.0,<3.0",
+    "jsonschema>=4.0,<5.0",
+    "pem>=21.0,<24.0",
+    "pyopenssl>=23.0,<26.0",
+    "pyyaml>=6.0,<7.0",
+    "schedule>=1.1,<2.0",
+    "coloredlogs>=15.0,<16.0",
+    "colorama>=0.4,<1.0",
+    "tldextract>=3.4,<6.0",
 ]
 
 [project.urls]
@@ -60,24 +60,24 @@ dnsrobocert = "dnsrobocert.core.main:main"
 
 [dependency-groups]
 dev = [
-    "black",
-    "flake8",
-    "flake8-pyproject",
-    "mypy",
-    "packaging",
-    "pytest",
-    "pytest-cov",
-    "pytest-sugar",
-    "isort",
-    "types-PyYAML",
-    "types-pyOpenSSL",
-    "types-requests",
-    "types-setuptools",
+    "black>=23.0,<26.0",
+    "flake8>=6.0,<8.0",
+    "flake8-pyproject>=1.2,<2.0",
+    "mypy>=1.5,<2.0",
+    "packaging>=21.0,<26.0",
+    "pytest>=7.0,<9.0",
+    "pytest-cov>=4.0,<8.0",
+    "pytest-sugar>=0.9,<2.0",
+    "isort>=5.10,<7.0",
+    "types-PyYAML>=6.0,<7.0",
+    "types-pyOpenSSL>=23.0,<25.0",
+    "types-requests>=2.28,<3.0",
+    "types-setuptools>=65.0,<81.0",
 ]
 doc = [
-    "sphinx",
-    "piccolo-theme",
-    "toml"
+    "sphinx>=7.0,<8.0",
+    "piccolo-theme>=0.22,<1.0",
+    "toml>=0.10,<1.0"
 ]
 
 [tool.pytest.ini_options]

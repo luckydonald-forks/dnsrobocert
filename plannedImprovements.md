@@ -87,11 +87,52 @@ logger.info("Certificate processing started",
 - Error scenario testing
 - Add pytest fixtures for common test data
 
+### 7. Upgrade to Modern Version of Python
+**Location**: `pyproject.toml`, `Dockerfile`, CI/CD workflows
+**Current State**: Supports Python 3.9-3.13, but Python 3.9 constrains dependency upgrades
+**Issue**: Python 3.9 compatibility limits access to latest dependency versions and security updates
+
+**Key Findings from Dependency Analysis**:
+- **acme/certbot v5.0+** require Python ≥3.10 (latest security/feature updates unavailable)
+- **sphinx v8.0+** requires Python ≥3.10 (documentation tooling limited)
+- **Several AWS/cloud SDKs** have urllib3 version conflicts with Python 3.9
+- **Latest type hint improvements** in Python 3.10+ would enhance code quality
+
+**Recommendation - Phased Approach**:
+```toml
+# Phase 1: Drop Python 3.9 support
+requires-python = ">=3.10"
+
+# Phase 2: Consider targeting Python 3.11+ for performance
+requires-python = ">=3.11"  # 10-60% performance improvements
+```
+
+**Benefits of Upgrading**:
+- **Security**: Access to latest acme/certbot versions with security fixes
+- **Performance**: Python 3.11+ offers 10-60% speed improvements
+- **Dependencies**: Unlock modern versions of cryptography, cloud SDKs, dev tools
+- **Type System**: Enhanced type hints and better IDE support
+- **Maintenance**: Reduce complexity of multi-version compatibility testing
+
+**Migration Impact**:
+- **Low Risk**: Python 3.9 EOL is October 2025, most users likely on 3.10+
+- **Docker**: Already using Python 3.11.12 in Dockerfile
+- **CI/CD**: Update test matrix to remove 3.9, add 3.12/3.13 focus
+- **Dependencies**: Immediate access to latest security updates
+
+**Implementation Timeline**:
+1. **Immediate**: Survey user base for Python version usage
+2. **Q1 2025**: Announce Python 3.9 deprecation with 6-month notice
+3. **Q2 2025**: Drop Python 3.9 support, upgrade to latest dependencies
+4. **Q3 2025**: Consider Python 3.11+ minimum for performance benefits
+
 ## Implementation Priority
 
 1. **Next Sprint**: Implement High Priority improvements:
-   - Dependency version pinning (#1)
-2. **Ongoing**: Gradually implement Medium Priority enhancements (#2-6)
+   - ✅ **COMPLETED**: Dependency version pinning (#1)
+2. **Q1 2025**: Strategic improvements:
+   - Python version upgrade planning (#7)
+3. **Ongoing**: Gradually implement Medium Priority enhancements (#2-6)
 
 ## Notes
 
@@ -99,3 +140,11 @@ logger.info("Certificate processing started",
 - Security improvements should be thoroughly tested before deployment
 - Consider implementing changes incrementally to minimize disruption
 - Update documentation as improvements are implemented
+
+## Recent Updates (September 2025)
+
+- **✅ Dependency Version Pinning Completed**: Updated all dependencies with proper version constraints
+- **Security Improvements Applied**: Cryptography upgraded from v2+ to v41+, PyOpenSSL to v23+
+- **Python 3.9 Constraint Identified**: Blocking access to latest security updates (acme v5.0+, certbot v5.0+)
+- **Docker Build Verified**: All changes tested and working in production Docker image
+- **Recommendation**: Plan Python 3.9 deprecation to unlock latest dependency versions
