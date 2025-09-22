@@ -27,6 +27,10 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Install uv
         uses: astral-sh/setup-uv@v6
+      - name: Configure Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
       - name: Build the documentation
         run: uv run --group doc sphinx-build -M html ./docs ./docs/_build
       - name: Upload artifact

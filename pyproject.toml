@@ -19,7 +19,6 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -32,13 +31,13 @@ authors = [
 ]
 readme = "README.rst"
 
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
-    "acme>=4.0,<5.0",
-    "certbot>=4.0,<5.0",
+    "acme>=5.0,<6.0",
+    "certbot>=5.0,<6.0",
     "dns-lexicon[full] @ git+https://github.com/jonmeacham/dns-lexicon.git@bc109536ac26c541de7f98318f49a8660d014431",
-    "cryptography>=41.0,<46.0",
-    "cffi>=1.15,<2.0",
+    "cryptography>=41.0,<47.0",
+    "cffi>=1.15,<3.0",
     "lxml>=4.9,<7.0",
     "dnspython>=2.1.0,<3.0",
     "jsonschema>=4.0,<5.0",
@@ -75,7 +74,7 @@ dev = [
     "types-setuptools>=65.0,<81.0",
 ]
 doc = [
-    "sphinx>=7.0,<8.0",
+    "sphinx>=8.0,<9.0",
     "piccolo-theme>=0.22,<1.0",
     "toml>=0.10,<1.0"
 ]
