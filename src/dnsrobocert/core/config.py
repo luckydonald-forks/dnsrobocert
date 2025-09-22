@@ -29,12 +29,11 @@ def load(config_path: str) -> dict[str, Any] | None:
 
     try:
         config = yaml.load(raw_config, Loader=yaml.SafeLoader)
-    except BaseException:
-        message = """
-Error while validating dnsrobocert configuration:
-Configuration file is not a valid YAML file.\
-"""
-        LOGGER.error(message)
+    except yaml.YAMLError as e:
+        LOGGER.error(f"Invalid YAML syntax: {e}")
+        return None
+    except Exception as e:
+        LOGGER.error(f"Unexpected error loading config: {e}")
         return None
 
     with as_file(files("dnsrobocert") / "schema.yml") as schema_path:
