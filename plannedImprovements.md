@@ -25,7 +25,72 @@ if dirs_mode > 0o777 or dirs_mode < 0:
 
 ## 🟡 Medium Priority (Performance & Maintainability)
 
-### 3. Background Worker Optimization ✅ COMPLETED
+### 3. Docker Build Process Optimization
+**Location**: `Dockerfile`, build context
+**Issue**: Build time and image size can be significantly optimized
+**Current Metrics**:
+- Image Size: 395MB
+- Build Time: ~1m 38s
+- Python packages: 317.4MB (80% of image)
+
+**Recommendations (in priority order)**:
+
+#### 3a. Add .dockerignore File (High Impact, Low Effort)
+**Expected Impact**: 20-30% build time reduction
+```dockerignore
+.git
+.github
+docs/
+test/
+*.md
+.pytest_cache
+__pycache__
+*.pyc
+.mypy_cache
+.coverage
+junit/
+```
+
+#### 3b. Optimize Layer Caching (High Impact, Medium Effort)
+**Expected Impact**: Better incremental builds, 15-20% build time reduction
+```dockerfile
+# Copy dependency files first (changes less frequently)
+COPY uv.lock pyproject.toml README.rst /tmp/dnsrobocert/
+RUN uv export --no-emit-project --no-hashes > constraints.txt
+
+# Copy source code last (changes most frequently)
+COPY src/ /tmp/dnsrobocert/src/
+```
+
+#### 3c. Remove Unnecessary Runtime Dependencies (Medium Impact, Low Effort)
+**Expected Impact**: 10-20MB image size reduction
+- Review necessity of `git`, `docker-cli`, `curl` in runtime image
+- Keep only dependencies required for actual certificate operations
+
+#### 3d. Enhanced Python Cleanup (Medium Impact, Low Effort)
+**Expected Impact**: Additional 10-15MB reduction
+```dockerfile
+RUN find /usr/local -name "*.pyo" -delete \
+ && find /usr/local -name "__pycache__" -type d -exec rm -rf {} + \
+ && find /usr/local -name "*.dist-info/WHEEL" -delete \
+ && find /usr/local -name "*.dist-info/METADATA" -delete
+```
+
+#### 3e. Build Cache Optimization (Medium Impact, Medium Effort)
+**Expected Impact**: Faster incremental builds
+```dockerfile
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir -c constraints.txt *.whl
+```
+
+**Expected Results After Implementation**:
+- Image Size: 395MB → 320-350MB (12-19% reduction)
+- Build Time: 1m 38s → 1m 0s-1m 10s (25-40% reduction)
+- Better cache utilization for incremental builds
+
+**Note**: While DNS provider dependencies (tencentcloud: 113MB, botocore: 111MB, oci: 19MB) consume ~62% of image size, these are retained to preserve the core value proposition of supporting all DNS providers through configuration alone. Alternative approaches like modular images would compromise this key feature.
+
+### 4. Background Worker Optimization ✅ COMPLETED
 **Location**: `src/dnsrobocert/core/background.py:48-57`
 **Issue**: Inefficient shutdown using `time.sleep()`
 **Status**: ✅ Implemented - Replaced time.sleep() with Event.wait() for immediate shutdown response
@@ -157,8 +222,12 @@ logger.info("Certificate processing started",
 ## Implementation Priority
 
 1. **Immediate**: Address High Priority security issues (#1, ~~#2 ✅~~)
-2. **Next Sprint**: Implement Medium Priority improvements (~~#3 ✅~~, ~~#4 ✅~~, #5-6)
-3. **Ongoing**: Gradually implement Low Priority enhancements (#7-11)
+2. **Next Sprint**: Implement Medium Priority improvements:
+   - **High Impact, Low Effort**: Docker build optimizations (#3a: .dockerignore)
+   - **Completed**: Background worker optimization (~~#4 ✅~~), Hash upgrade (~~#5 ✅~~), YAML security (~~#6 ✅~~)
+   - **Remaining**: Docker layer caching (#3b), dependency version pinning (#7)
+3. **Following Sprint**: Medium Impact Docker optimizations (#3c-3e)
+4. **Ongoing**: Gradually implement Low Priority enhancements (#8-11)
 
 ## Notes
 
