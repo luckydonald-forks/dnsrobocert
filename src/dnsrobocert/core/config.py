@@ -28,7 +28,7 @@ def load(config_path: str) -> dict[str, Any] | None:
     raw_config = _inject_env_variables(raw_config)
 
     try:
-        config = yaml.load(raw_config, Loader=yaml.SafeLoader)
+        config = yaml.safe_load(raw_config)
     except yaml.YAMLError as e:
         LOGGER.error(f"Invalid YAML syntax: {e}")
         return None
@@ -38,7 +38,7 @@ def load(config_path: str) -> dict[str, Any] | None:
 
     with as_file(files("dnsrobocert") / "schema.yml") as schema_path:
         with open(schema_path) as file_h:
-            schema = yaml.load(file_h.read(), yaml.SafeLoader)
+            schema = yaml.safe_load(file_h.read())
 
     if not config:
         message = """

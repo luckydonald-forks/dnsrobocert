@@ -59,10 +59,17 @@ def digest(path: str) -> bytes | None:
     return hasher.digest()
 ```
 
-### 5. YAML Loading Security
-**Location**: `src/dnsrobocert/core/config.py:42`
+### 5. YAML Loading Security ✅ COMPLETED
+**Location**: `src/dnsrobocert/core/config.py:31,41`
 **Issue**: Direct use of `yaml.load()` with SafeLoader
-**Recommended**: Use `yaml.safe_load()` directly for clarity
+**Status**: ✅ Implemented - Replaced yaml.load() with yaml.safe_load() for better code clarity
+**Implementation**:
+```python
+# Before: yaml.load(raw_config, Loader=yaml.SafeLoader)
+# After: yaml.safe_load(raw_config)
+config = yaml.safe_load(raw_config)
+schema = yaml.safe_load(file_h.read())
+```
 
 ### 6. Dependency Version Pinning
 **Location**: `pyproject.toml`
