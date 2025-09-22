@@ -10,19 +10,17 @@ This document outlines optimization opportunities and best practice improvements
 **Current**: `dns-lexicon[full] @ git+https://github.com/jonmeacham/dns-lexicon.git@main`
 **Recommendation**: Pin to specific commit hash or use published version
 
-### 2. File Permission Validation
+### 2. File Permission Validation ✅ COMPLETED
 **Location**: `src/dnsrobocert/core/utils.py:65-102`
 **Issue**: No validation of permission values
-**Recommended Addition**:
+**Status**: ✅ Implemented - Added comprehensive permission validation with error messages
+**Implementation**:
 ```python
-def fix_permissions(certificate_permissions: dict[str, Any], target_path: str) -> None:
-    files_mode = certificate_permissions.get("files_mode", 0o640)
-    dirs_mode = certificate_permissions.get("dirs_mode", 0o750)
-    
-    # Validate permission ranges
-    if files_mode > 0o777 or dirs_mode > 0o777:
-        raise ValueError("Invalid permission values")
-    # ... rest of function
+# Validate permission ranges
+if files_mode > 0o777 or files_mode < 0:
+    raise ValueError(f"Invalid files_mode permission value: {oct(files_mode)}. Must be between 0 and 0o777")
+if dirs_mode > 0o777 or dirs_mode < 0:
+    raise ValueError(f"Invalid dirs_mode permission value: {oct(dirs_mode)}. Must be between 0 and 0o777")
 ```
 
 ## 🟡 Medium Priority (Performance & Maintainability)
@@ -147,7 +145,7 @@ logger.info("Certificate processing started",
 
 ## Implementation Priority
 
-1. **Immediate**: Address High Priority security issues (#1-2)
+1. **Immediate**: Address High Priority security issues (#1, ~~#2 ✅~~)
 2. **Next Sprint**: Implement Medium Priority improvements (#3-6)
 3. **Ongoing**: Gradually implement Low Priority enhancements (#7-11)
 

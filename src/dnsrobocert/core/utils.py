@@ -65,6 +65,12 @@ def execute(
 def fix_permissions(certificate_permissions: dict[str, Any], target_path: str) -> None:
     files_mode = certificate_permissions.get("files_mode", 0o640)
     dirs_mode = certificate_permissions.get("dirs_mode", 0o750)
+    
+    # Validate permission ranges
+    if files_mode > 0o777 or files_mode < 0:
+        raise ValueError(f"Invalid files_mode permission value: {oct(files_mode)}. Must be between 0 and 0o777")
+    if dirs_mode > 0o777 or dirs_mode < 0:
+        raise ValueError(f"Invalid dirs_mode permission value: {oct(dirs_mode)}. Must be between 0 and 0o777")
 
     os.chmod(target_path, dirs_mode)
 
