@@ -205,4 +205,4 @@ def _business_check(config: dict[str, Any]) -> None:
         raise ValueError("Invalid files_mode {0} provided.".format(oct(files_mode)))
     dirs_mode = config.get("acme", {}).get("certs_permissions", {}).get("dirs_mode")
     if dirs_mode and dirs_mode > 511:
-        raise ValueError("Invalid dirs_mode {0} provided.".format(oct(files_mode)))
+        raise ValueError("Invalid dirs_mode {0} provided.".format(oct(dirs_mode)))
