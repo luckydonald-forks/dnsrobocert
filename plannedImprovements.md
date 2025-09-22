@@ -25,18 +25,21 @@ if dirs_mode > 0o777 or dirs_mode < 0:
 
 ## 🟡 Medium Priority (Performance & Maintainability)
 
-### 3. Background Worker Optimization
+### 3. Background Worker Optimization ✅ COMPLETED
 **Location**: `src/dnsrobocert/core/background.py:48-57`
 **Issue**: Inefficient shutdown using `time.sleep()`
-**Recommended Fix**:
+**Status**: ✅ Implemented - Replaced time.sleep() with Event.wait() for immediate shutdown response
+**Implementation**:
 ```python
 def _launch_background_jobs(stop_thread: threading.Event, interval: int = 1) -> None:
-    def run():
-        while not stop_thread.is_set():
-            # Use wait() with timeout instead of sleep for faster shutdown
-            if stop_thread.wait(timeout=interval):
-                break
-            schedule.run_pending()
+    class ScheduleThread(threading.Thread):
+        @classmethod
+        def run(cls) -> None:
+            while not stop_thread.is_set():
+                # Use wait() with timeout instead of sleep for faster shutdown
+                if stop_thread.wait(timeout=interval):
+                    break
+                schedule.run_pending()
 ```
 
 ### 4. Cryptographic Hash Upgrade ✅ COMPLETED
@@ -147,7 +150,7 @@ logger.info("Certificate processing started",
 ## Implementation Priority
 
 1. **Immediate**: Address High Priority security issues (#1, ~~#2 ✅~~)
-2. **Next Sprint**: Implement Medium Priority improvements (#3, ~~#4 ✅~~, #5-6)
+2. **Next Sprint**: Implement Medium Priority improvements (~~#3 ✅~~, ~~#4 ✅~~, #5-6)
 3. **Ongoing**: Gradually implement Low Priority enhancements (#7-11)
 
 ## Notes

@@ -50,8 +50,10 @@ def _launch_background_jobs(stop_thread: threading.Event, interval: int = 1) -> 
         @classmethod
         def run(cls) -> None:
             while not stop_thread.is_set():
+                # Use wait() with timeout instead of sleep for faster shutdown
+                if stop_thread.wait(timeout=interval):
+                    break
                 schedule.run_pending()
-                time.sleep(interval)
 
     continuous_thread = ScheduleThread()
     continuous_thread.start()
