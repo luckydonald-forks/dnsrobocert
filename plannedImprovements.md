@@ -39,10 +39,11 @@ def _launch_background_jobs(stop_thread: threading.Event, interval: int = 1) -> 
             schedule.run_pending()
 ```
 
-### 4. Cryptographic Hash Upgrade
-**Location**: `src/dnsrobocert/core/utils.py:122-131`
+### 4. Cryptographic Hash Upgrade ✅ COMPLETED
+**Location**: `src/dnsrobocert/core/utils.py:128-136`
 **Issue**: MD5 usage for file digests (security concern)
-**Recommended Fix**:
+**Status**: ✅ Implemented - Upgraded from MD5 to SHA-256 with chunked reading for memory efficiency
+**Implementation**:
 ```python
 def digest(path: str) -> bytes | None:
     if not os.path.exists(path):
@@ -146,7 +147,7 @@ logger.info("Certificate processing started",
 ## Implementation Priority
 
 1. **Immediate**: Address High Priority security issues (#1, ~~#2 ✅~~)
-2. **Next Sprint**: Implement Medium Priority improvements (#3-6)
+2. **Next Sprint**: Implement Medium Priority improvements (#3, ~~#4 ✅~~, #5-6)
 3. **Ongoing**: Gradually implement Low Priority enhancements (#7-11)
 
 ## Notes

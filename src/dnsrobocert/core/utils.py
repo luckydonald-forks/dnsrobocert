@@ -128,13 +128,12 @@ def configure_certbot_workspace(
 def digest(path: str) -> bytes | None:
     if not os.path.exists(path):
         return None
-
+    
+    hasher = hashlib.sha256()
     with open(path, "rb") as file_h:
-        config_data = file_h.read()
-
-    md5 = hashlib.md5()
-    md5.update(config_data)
-    return md5.digest()
+        for chunk in iter(lambda: file_h.read(4096), b""):
+            hasher.update(chunk)
+    return hasher.digest()
 
 
 def normalize_lineage(domain: str) -> str:
