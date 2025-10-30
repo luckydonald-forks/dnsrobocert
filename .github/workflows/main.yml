@@ -55,7 +55,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Build docker image
-        run: docker build --tag adferrand/dnsrobocert:temp .
+        run: |
+          set -euo pipefail
+          COMMIT=$(git rev-parse --short=7 HEAD)
+          DATE=$(date -u +%Y%m%d)
+          # build image with a temp tag used by tests
+          docker build -t adferrand/dnsrobocert:temp .
+          # add informative tags: latest, commit hash, date, date_commit
+          docker tag adferrand/dnsrobocert:temp adferrand/dnsrobocert:latest
+          docker tag adferrand/dnsrobocert:temp adferrand/dnsrobocert:${COMMIT}
+          docker tag adferrand/dnsrobocert:temp adferrand/dnsrobocert:${DATE}
+          docker tag adferrand/dnsrobocert:temp adferrand/dnsrobocert:${DATE}_${COMMIT}
       - name: Run docker unit tests
         run: |
           mkdir -p ./bin
