@@ -68,3 +68,13 @@ COPY docker/run.sh /run.sh
 RUN chmod +x /run.sh
 
 CMD ["/run.sh"]
+
+# fix `envsubst: not found`
+RUN apk add --no-cache --update gettext
+
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+CMD [ "/entrypoint.sh" ]
+
+COPY docker/lets-encrypt-config.template.yml /config.template.yml

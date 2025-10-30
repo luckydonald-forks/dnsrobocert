@@ -1,0 +1,17 @@
+acme:
+  email_account: $LETS_ENCRYPT_EMAIL_ACCOUNT
+certificates:
+- autorestart:
+  - containers:
+    - sish
+  domains:
+  - $DOMAIN
+  - '*.$DOMAIN'
+  name: $DOMAIN
+  profile: cloudflare
+profiles:
+- name: cloudflare
+  provider: cloudflare
+  provider_options:
+    auth_token: $CLOUDFLARE_AUTH_TOKEN
+    auth_username: $CLOUDFLARE_AUTH_EMAIL
