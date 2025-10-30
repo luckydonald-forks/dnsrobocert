@@ -37,11 +37,16 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          labels: |
+            org.opencontainers.image.created={{commit_date 'YYYY-MM-DDTHH:mm:ss.SSS[Z]'}}
           tags: |
             type=ref,event=branch,prefix=
             type=ref,event=tag,prefix=
             type=sha,format=short,prefix=
             type=sha,format=long,prefix=
+            # dynamically set the branch name and sha as a custom tag
+            type=raw,value={{sha}}_{{commit_date 'YYYY-MM-DD_HH-mm-ss'}},prefix=
+            type=raw,value={{sha}}_{{commit_date 'YYYY-MM-DD_HH-mm-ss'}}_build{{date 'YYYY-MM-DD_HH-mm-ss'}},prefix=
 
       - name: Build and push Docker image
         id: build-and-push
