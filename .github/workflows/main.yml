@@ -59,18 +59,26 @@ jobs:
           set -euo pipefail
           COMMIT=$(git rev-parse --short=7 HEAD)
           DATE=$(date -u +%Y%m%d)
+          # Allow overriding the image name via repository variable `DOCKER_IMAGE`.
+          IMAGE="${{ vars.DOCKER_IMAGE }}"
+          if [ -z "$IMAGE" ]; then
+            IMAGE="adferrand/dnsrobocert"
+          fi
+          echo "COMMIT=${COMMIT}" >> $GITHUB_ENV
+          echo "DATE=${DATE}" >> $GITHUB_ENV
+          echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
           # build image with a temp tag used by tests
-          docker build -t adferrand/dnsrobocert:temp .
+          docker build -t "${IMAGE}:temp" .
           # add informative tags: latest, commit hash, date, date_commit
-          docker tag adferrand/dnsrobocert:temp adferrand/dnsrobocert:latest
-          docker tag adferrand/dnsrobocert:temp adferrand/dnsrobocert:${COMMIT}
-          docker tag adferrand/dnsrobocert:temp adferrand/dnsrobocert:${DATE}
-          docker tag adferrand/dnsrobocert:temp adferrand/dnsrobocert:${DATE}_${COMMIT}
+          docker tag "${IMAGE}:temp" "${IMAGE}:latest"
+          docker tag "${IMAGE}:temp" "${IMAGE}:${COMMIT}"
+          docker tag "${IMAGE}:temp" "${IMAGE}:${DATE}"
+          docker tag "${IMAGE}:temp" "${IMAGE}:${DATE}_${COMMIT}"
       - name: Run docker unit tests
         run: |
           mkdir -p ./bin
           curl -fsSL https://goss.rocks/install | GOSS_DST=./bin sh
-          GOSS_PATH=./bin/goss GOSS_SLEEP=5 GOSS_FILES_PATH=./test/goss ./bin/dgoss run adferrand/dnsrobocert:temp
+          GOSS_PATH=./bin/goss GOSS_SLEEP=5 GOSS_FILES_PATH=./test/goss ./bin/dgoss run ${IMAGE}:temp
   quality:
     strategy:
       matrix:
