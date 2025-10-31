@@ -23,7 +23,8 @@ RUN set -xe \
 COPY src/ /tmp/dnsrobocert/src/
 
 # Install uv and build the wheel
-RUN pip install uv \
+RUN set -xe \
+ && pip install uv \
  && cd /tmp/dnsrobocert \
  && uv build
 
@@ -42,7 +43,8 @@ RUN apk add --no-cache \
        bash
 
 # Install Python packages with aggressive constraint enforcement
-RUN PIP_EXTRA_INDEX_URL=https://www.piwheels.org/simple PIP_CONSTRAINT=/tmp/dnsrobocert/constraints.txt python3 -m pip install --no-cache-dir --no-deps /tmp/dnsrobocert/*.whl \
+RUN set -xe \
+ && PIP_EXTRA_INDEX_URL=https://www.piwheels.org/simple PIP_CONSTRAINT=/tmp/dnsrobocert/constraints.txt python3 -m pip install --no-cache-dir --no-deps /tmp/dnsrobocert/*.whl \
  # Install all constrained dependencies in one go to avoid resolution conflicts
  && PIP_EXTRA_INDEX_URL=https://www.piwheels.org/simple python3 -m pip install --no-cache-dir \
     acme==5.0.0 certbot==5.0.0 cffi==2.0.0 colorama==0.4.6 coloredlogs==15.0.1 \
