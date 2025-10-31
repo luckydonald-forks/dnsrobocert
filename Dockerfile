@@ -40,7 +40,9 @@ ENV CERTS_PATH=/etc/letsencrypt
 RUN apk add --no-cache \
        git \
        libxslt \
-       bash
+       bash \
+       gettext \
+ && echo 'installed runtime dependencies'
 
 # Install Python packages with aggressive constraint enforcement
 RUN set -xe \
@@ -70,10 +72,7 @@ RUN mkdir -p /opt/dnsrobocert/bin \
 COPY docker/run.sh /run.sh
 RUN chmod +x /run.sh
 
-CMD ["/run.sh"]
-
 # fix `envsubst: not found`
-RUN apk add --no-cache --update gettext
 
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
