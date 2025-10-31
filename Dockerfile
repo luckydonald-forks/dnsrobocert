@@ -1,7 +1,7 @@
 FROM docker.io/python:3.11.12-alpine AS constraints
 
 # Install build dependencies
-RUN apk add --no-cache build-base libffi-dev libxml2-dev libxslt-dev
+RUN apk add --no-cache build-base libffi-dev libxml2-dev libxslt-dev rust cargo
 
 # Copy dependency files first (changes less frequently)
 COPY uv.lock pyproject.toml README.rst /tmp/dnsrobocert/
