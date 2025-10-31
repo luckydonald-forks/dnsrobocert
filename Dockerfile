@@ -7,7 +7,8 @@ RUN apk add --no-cache build-base libffi-dev libxml2-dev libxslt-dev rust cargo
 COPY uv.lock pyproject.toml README.rst /tmp/dnsrobocert/
 
 # Generate constraints and build wheel
-RUN cd /tmp/dnsrobocert \
+RUN set -xe \
+ && cd /tmp/dnsrobocert \
  && uv export --no-emit-project --no-hashes > constraints.txt \
  # Remove dns-lexicon constraint since we're using git dependency
  && sed -i '/^dns-lexicon @ git+/d' constraints.txt \
